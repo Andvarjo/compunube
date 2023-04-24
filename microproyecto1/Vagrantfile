@@ -1,0 +1,52 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+
+  $runservice1 = <<-SERVICE1
+  consul agent -data-dir=/tmp/consul -node=clienteUbuntu1 -bind=192.168.100.2 -enable-script-checks=true -config-dir=/etc/consul.d > /dev/null 2>&1 & node consulService/app/app1.js 3000 > /dev/null 2>&1 & node consulService/app/app1.js 3001 > /dev/null 2>&1 &
+  SERVICE1
+  
+  $runservice2 = <<-SERVICE2
+  consul agent -data-dir=/tmp/consul -node=clienteUbuntu2 -bind=192.168.100.3 -enable-script-checks=true -config-dir=/etc/consul.d > /dev/null 2>&1 & node consulService/app/app2.js 3000 > /dev/null 2>&1 & node consulService/app/app2.js 3001 > /dev/null 2>&1 &
+  SERVICE2
+
+
+
+  if Vagrant.has_plugin? "vagrant-vbguest"
+    config.vbguest.no_install  = true
+    config.vbguest.auto_update = false
+    config.vbguest.no_remote   = true
+  end
+
+  config.vm.define :clienteUbuntu1 do |clienteUbuntu1|
+    clienteUbuntu1.vm.box = "bento/ubuntu-22.04"
+    clienteUbuntu1.vm.network :private_network, ip: "192.168.100.2"
+    clienteUbuntu1.vm.hostname = "clienteUbuntu1"
+    clienteUbuntu1.vm.synced_folder "./synced", "/home/vagrant/synced"
+    clienteUbuntu1.vm.provision "shell", path: "cliente1.sh"
+    clienteUbuntu1.vm.provision "shell", inline: $runservice1
+    
+  end
+
+  config.vm.define :clienteUbuntu2 do |clienteUbuntu2|
+    clienteUbuntu2.vm.box = "bento/ubuntu-22.04"
+    clienteUbuntu2.vm.network :private_network, ip: "192.168.100.3"
+    clienteUbuntu2.vm.hostname = "clienteUbuntu2"
+    clienteUbuntu2.vm.synced_folder "./synced", "/home/vagrant/synced"
+    clienteUbuntu2.vm.provision "shell", path: "cliente2.sh"
+    clienteUbuntu2.vm.provision "shell", inline: $runservice2
+  end
+
+  config.vm.define :servidorUbuntu do |servidorUbuntu|
+    servidorUbuntu.vm.box = "bento/ubuntu-22.04"
+    servidorUbuntu.vm.network :private_network, ip: "192.168.100.4"
+    servidorUbuntu.vm.hostname = "servidorUbuntu"
+    servidorUbuntu.vm.synced_folder "./synced", "/home/vagrant/synced"
+    servidorUbuntu.vm.provision "shell", path: "scriptserver.sh"
+
+  end
+end
+
+
