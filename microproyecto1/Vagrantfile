@@ -5,12 +5,25 @@ Vagrant.configure("2") do |config|
 
 
   $runservice1 = <<-SERVICE1
+  sleep 15
   consul agent -data-dir=/tmp/consul -node=clienteUbuntu1 -bind=192.168.100.2 -enable-script-checks=true -config-dir=/etc/consul.d > /dev/null 2>&1 & node consulService/app/app1.js 3000 > /dev/null 2>&1 & node consulService/app/app1.js 3001 > /dev/null 2>&1 &
   SERVICE1
   
   $runservice2 = <<-SERVICE2
+  sleep 15
   consul agent -data-dir=/tmp/consul -node=clienteUbuntu2 -bind=192.168.100.3 -enable-script-checks=true -config-dir=/etc/consul.d > /dev/null 2>&1 & node consulService/app/app2.js 3000 > /dev/null 2>&1 & node consulService/app/app2.js 3001 > /dev/null 2>&1 &
   SERVICE2
+
+  $server= <<-SERVER
+  sleep 15
+  consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=servidorUbuntu -bind=192.168.100.4 -enable-script-checks=true -config-dir=/etc/consul.d -ui -client=0.0.0.0 > /dev/null 2>&1 &
+  sleep 5
+  consul join 192.168.100.2
+  sleep 5
+  consul join 192.168.100.3
+  SERVER
+
+ 
 
 
 
@@ -26,7 +39,7 @@ Vagrant.configure("2") do |config|
     clienteUbuntu1.vm.hostname = "clienteUbuntu1"
     clienteUbuntu1.vm.synced_folder "./synced", "/home/vagrant/synced"
     clienteUbuntu1.vm.provision "shell", path: "cliente1.sh"
-    clienteUbuntu1.vm.provision "shell", inline: $runservice1
+    clienteUbuntu1.vm.provision "shell", inline: $runservice1,run: "always"
     
   end
 
@@ -36,7 +49,7 @@ Vagrant.configure("2") do |config|
     clienteUbuntu2.vm.hostname = "clienteUbuntu2"
     clienteUbuntu2.vm.synced_folder "./synced", "/home/vagrant/synced"
     clienteUbuntu2.vm.provision "shell", path: "cliente2.sh"
-    clienteUbuntu2.vm.provision "shell", inline: $runservice2
+    clienteUbuntu2.vm.provision "shell", inline: $runservice2, run: "always"
   end
 
   config.vm.define :servidorUbuntu do |servidorUbuntu|
@@ -45,8 +58,10 @@ Vagrant.configure("2") do |config|
     servidorUbuntu.vm.hostname = "servidorUbuntu"
     servidorUbuntu.vm.synced_folder "./synced", "/home/vagrant/synced"
     servidorUbuntu.vm.provision "shell", path: "scriptserver.sh"
-
+    servidorUbuntu.vm.provision "shell", inline: $server, run: "always"
   end
+  
+    
 end
 
 

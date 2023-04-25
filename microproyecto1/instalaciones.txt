@@ -1,0 +1,25 @@
+instalar node js y npm en windows
+https://nodejs.org/en/download
+
+instalar artillery
+npm install -g artillery
+
+check instlacion artillery
+
+artillery dino
+
+correr el test
+
+artillery quick --count 20 -n 20 http://192.168.100.4
+
+
+link haproxy stats
+
+http://192.168.100.4/haproxy?stats
+
+user:admin
+paswd:admin
+
+link consul
+
+http://192.168.100.4:8500/ui/dc1/nodes
