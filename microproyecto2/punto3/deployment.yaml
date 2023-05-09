@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notebook_demo
+spec:
+  selector:
+    matchLabels:
+      app: notebook_demo
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: notebook_demo
+    spec:
+     containers:
+     - name: notebook_demo
+       image: andvarjo/notebook_demo
+       imagePullPolicy: Always
+       ports:
+       - containerPort: 8080

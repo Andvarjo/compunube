@@ -1,10 +1,14 @@
-descargar Azure CLI:
 
-https://aka.ms/installazurecliwindows
+--------------------------------------------desde CLI-----------------------------------------------
 
-desde CLI:
+
+desde Container con docker instalado :
+
+docker run -it mcr.microsoft.com/azure-cli
 
 az login # login en azure
+
+
 
 # deben registrase los siguiente servicios
 az provider register --namespace Microsoft.OperationsManagement
@@ -14,6 +18,20 @@ az provider register --namespace Microsoft.OperationalInsights
 az provider show -n Microsoft.OperationsManagement -o table
 az provider show -n Microsoft.OperationalInsights -o table
 
+az aks install-cli
+
+conectar cluster de kubernetes (boton connect 2 comandos que arroja azure)
+
+kubectl apply -f azure-vote.yaml
+
+
+kubectl get service # para agarrar IP externa
+
+
+
+
+
+-----------------------------------------------recursos------------------------------------------------
 https://www.youtube.com/watch?v=NnwQZyi0BAs
 https://www.youtube.com/watch?v=eLyiQmH7YII
 https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli

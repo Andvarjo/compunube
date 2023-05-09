@@ -1,0 +1,25 @@
+
+
+crear cluster kubernetes en azure: maquina Bs2 --- misma del punto 1 ( 2 nodos)
+
+conectar cluster de kubernetes (boton connect 2 comandos que arroja azure)
+
+kube ctl get nodes # verificar lso dos nodos que creamos
+
+kubectl apply -f deployment.yaml
+
+kubectl expose deployment kubermatic-dl-deployment  --type=LoadBalancer --port 80 --target-port 5000
+
+
+kubectl get service # conseguimos la IP externa
+
+cargar archivos a la maquina de la carpeta image
+
+
+probar el clasificador:
+
+
+
+curl -X POST -F img=@dog.jpeg http://ipexterna/predict
+curl -X POST -F img=@horse.jpeg http://ipexterna/predict
+curl -X POST -F img=@car.jpeg http://ipexterna/predict
