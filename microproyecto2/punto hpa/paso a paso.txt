@@ -1,0 +1,38 @@
+#prerequisito: instalar Docker y Minikube
+
+minikube start
+
+minikube addons list
+
+-----------------------------------------------------
+#activar service-metrics
+
+minikube addon enable service-metrics
+-------------------------------------------------------
+#crear la app de apache
+
+kubectl apply - f application/php-apache.yaml
+
+
+#o se puede desde la web :
+
+kubectl apply -f https://k8s.io/examples/application/php-apache.yaml
+-------------------------------------------------------
+
+#crear el horizontalpodautoscaler (HPA)
+
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+
+kubectl get hpa #verificar
+
+------------------------------------------------------
+
+#en otra terminal ejecutar lo siuiente para incrementar la carga:
+
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+-------------------------------------------------------------
+
+#en la termina original ejecutar lo siguiente para visualizar el comportamiento:
+
+kubectl get hpa php-apache --watch

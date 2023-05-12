@@ -23,7 +23,9 @@ app.get('/', (req, res) => {
     data: Math.floor(Math.random() * 89999999 + 10000000),
     data_pid: PID,
     data_service: SERVICE_ID,
-    data_host: HOST
+    data_host: HOST,
+    data_response: 'microservicio: ' +String(process.argv[2]).slice(2)
+
   });
 });
 
